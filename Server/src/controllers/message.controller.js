@@ -2,6 +2,7 @@ import { Chat } from "../models/chat.models.js"
 import { Message } from "../models/message.models.js"
 
 const sendMessage = async (req, res) => {
+    let success = false
     
     try {
         const { receiverId } = req.params;
@@ -13,15 +14,14 @@ const sendMessage = async (req, res) => {
         })
 
         if(!chat){
-            chat = await chat.create({
+            chat = await Chat.create({
                 participants: [senderId, receiverId]
             })
         }
 
-        // FIXME: message not store in database
         const newMsg = new Message({
-            senderId,
-            receiverId,
+            sender: senderId,  
+            receiver: receiverId,  
             message
         })
         
@@ -29,7 +29,10 @@ const sendMessage = async (req, res) => {
             chat.messages.push(newMsg._id)
         }
 
-        res.status(201).json(newMsg)
+        await chat.save()
+        await newMsg.save()
+
+        res.status(201).json({success, newMsg})
 
     } catch (error) {
         return res.status(500).json({success, message: "Error in send message controller" , error: error.message})
