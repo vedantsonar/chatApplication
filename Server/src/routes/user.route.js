@@ -5,14 +5,13 @@ import {
   loginUser,
   logoutUser,
 } from "../controllers/user.controller.js";
-import { fetchUser } from "../middlewares/fetchUser.middleware.js";
 
 const router = Router();
 
 router.route("/register").post(
   upload.fields([
     {
-      name: "dp",
+      name: "profilePic",
       maxCount: 1,
     }
   ]),
@@ -21,6 +20,6 @@ router.route("/register").post(
 
 router.route("/login").post(loginUser);
 
-router.route("/logout").post(fetchUser, logoutUser);
+router.route("/logout").post(logoutUser);
 
 export default router;
