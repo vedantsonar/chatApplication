@@ -29,8 +29,9 @@ const sendMessage = async (req, res) => {
             chat.messages.push(newMsg._id)
         }
 
-        await chat.save()
-        await newMsg.save()
+        // Socket.io 
+
+        await Promise.all([chat.save(), newMsg.save()]) // both save methods run simultaneously
 
         res.status(201).json({success, newMsg})
 
@@ -39,4 +40,27 @@ const sendMessage = async (req, res) => {
     }
 }
 
-export { sendMessage }
+const getMessage = async (req, res) => {
+    let success = false;
+    try {
+        const { userToChatId } = req.params;
+        const senderId = req.user?._id;
+
+        const chat = await Chat.findOne({
+            participants: { $all: [senderId, userToChatId] }
+        }).populate("messages");
+
+        if (!chat) {
+            return res.status(404).json({ success, message: "Chat not found." });
+        }
+
+        success = true;
+        return res.status(200).json({ success, message: chat.messages });
+
+    } catch (error) {
+        return res.status(500).json({ success, message: "Error in get message controller", error: error.message });
+    }
+};
+
+
+export { sendMessage, getMessage }

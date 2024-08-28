@@ -15,10 +15,12 @@ app.use(cookieParser())
 // routes import
 import userRouter from "./routes/user.route.js";
 import msgRouter from "./routes/message.route.js"
+import contactsRouter from "./routes/contacts.route.js";
 
 // route declaration
 app.use("/api/users", userRouter)
 app.use("/api/msg", msgRouter)
+app.use("/api/contacts", contactsRouter)
 
 
 export { app }
