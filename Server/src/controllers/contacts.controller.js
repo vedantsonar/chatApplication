@@ -4,7 +4,7 @@ const getUserForSidebar = async (req, res) => {
     let success = false
     try {
         
-        const loggedInUser = req.user._id
+        const loggedInUser = req.user.id
 
         const filteredUsers = await User.find({ _id: {$ne: loggedInUser} }).select("-password")
 

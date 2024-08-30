@@ -1,7 +1,7 @@
 import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import bcrypt from "bcryptjs";
-import generateTokenAndSetCookie from "../utils/generateAuthToken.utils.js";
+import generateAuthToken from "../utils/generateAuthToken.utils.js";
 
 
 const registerUser = async (req, res) => {
@@ -42,10 +42,10 @@ const registerUser = async (req, res) => {
         });
 
         // jwt Token
-        generateTokenAndSetCookie(user._id, res)
+        const authToken = generateAuthToken(user._id)
 
         success = true;
-        return res.json({ success, user });
+        return res.json({ success, authToken, user });
 
     } catch (error) {
         return res.status(500).json({success, message: "Error in Register User" , error: error.message})
@@ -66,32 +66,20 @@ const loginUser = async (req, res) => {
         }
 
         // authtoken
-        generateTokenAndSetCookie(user._id, res)
+        const authToken = generateAuthToken(user._id)
 
-        success = true
-
-        return res.status(200).json({success, user})
+        success = true;
+        return res.json({ success, authToken, user });
 
     } catch (error) {
         return res.status(500).json({success, message: "Error in Login User" , error: error.message})
     }
 }
 
-const logoutUser =  (req, res) => {
-    let success = false
-    try {
-        res.cookie("jwt", "", { maxAge: 0 })
-        success = true
-        res.status(200).json({success, message: "User logout Successfully"})
-    } catch (error) {
-        return res.status(500).json({success, message: "Error in Logout User" , error: error.message})
-    }
-}
 
 export {
     registerUser,
-    loginUser,
-    logoutUser
+    loginUser
 }
 
 // TODO: Update User Information 

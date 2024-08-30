@@ -1,32 +1,19 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.models.js";
 
-const fetchUser = async (req, res, next) => {
-    try {
-        const token = req.cookies.jwt;
-        if(!token){
-            return res.status(401).json({error: "Unauthorized - No token provided"})
-        }
-
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
-
-        if(!decodedToken){
-            return res.status(401).json({error: "Unauthorized - Invalid Token"})
-        }
-
-        const user = await User.findById(decodedToken.userId).select("-password")
-
-        if(!user){
-            return res.status(404).json({error: "User Not Found"})
-        }
-
-        req.user = user
-
-        next()
-
-    } catch (error) {
-        return res.status(500).json({success, message: "Error in fetching user" , error: error.message})
+const fetchUser = (req, res, next) => {
+    // Get the user from the JWT token and add id to req object
+    const token = req.header('auth-token');
+    if (!token) {
+        return res.status(401).send({ error: "Please authenticate using a valid token" });
     }
-}
 
-export { fetchUser }
+    try {
+        const data = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = { id: data.id }; 
+        next();
+    } catch (error) {
+        res.status(401).send({ error: "Please authenticate using a valid token" });
+    }
+};
+
+export { fetchUser };

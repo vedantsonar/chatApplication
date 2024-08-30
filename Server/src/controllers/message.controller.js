@@ -7,7 +7,7 @@ const sendMessage = async (req, res) => {
     try {
         const { receiverId } = req.params;
         const { message } = req.body;
-        const senderId = req.user._id;
+        const senderId = req.user.id;
 
         let chat = await Chat.findOne({
             participants: { $all : [senderId, receiverId]} 
@@ -33,6 +33,7 @@ const sendMessage = async (req, res) => {
 
         await Promise.all([chat.save(), newMsg.save()]) // both save methods run simultaneously
 
+        success = true
         res.status(201).json({success, newMsg})
 
     } catch (error) {
@@ -44,7 +45,7 @@ const getMessage = async (req, res) => {
     let success = false;
     try {
         const { userToChatId } = req.params;
-        const senderId = req.user?._id;
+        const senderId = req.user?.id;
 
         const chat = await Chat.findOne({
             participants: { $all: [senderId, userToChatId] }
