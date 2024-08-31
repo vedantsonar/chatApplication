@@ -76,10 +76,24 @@ const loginUser = async (req, res) => {
     }
 }
 
+const logout = (req, res) => {
+    let success = false
+
+    try {
+
+        success = true;
+        return res.status(200).json({ success, authToken: null  });
+
+    } catch (error) {
+        return res.status(500).json({success, message: "Error in Login User" , error: error.message})
+    }
+}
+
 
 export {
     registerUser,
-    loginUser
+    loginUser,
+    logout
 }
 
 // TODO: Update User Information 

@@ -6,11 +6,12 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  const isAuthenticated = localStorage.getItem("token");
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+
   return (
     <div className="p-4 h-screen flex items-center justify-center">
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/" />} />
+        <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
         <Route path="/login" element={ isAuthenticated ? <Navigate to="/" /> : <Login /> } />
         <Route path="/signup" element={ isAuthenticated ? <Navigate to="/" /> : <SignUp /> } />
       </Routes>

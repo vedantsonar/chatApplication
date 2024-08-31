@@ -1,9 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const useSignup = () => {
-  let navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const signup = async (inputs) => {
@@ -28,7 +26,7 @@ const useSignup = () => {
     formData.append("password", password);
     formData.append("confirmPassword", confirmPassword);
 
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await fetch(`http://localhost:5000/api/users/register`, {
         method: "POST",
@@ -40,7 +38,7 @@ const useSignup = () => {
 
       if (data.success) {
         localStorage.setItem("token", data.authToken);
-        navigate("/");
+        window.location.href = "/";
       } else {
         toast.error(data.message);
       }
