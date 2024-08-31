@@ -25,3 +25,4 @@ export default App;
 
 // FIXME: change icon -> icon-image { SearchInput.jsx }
 // FIXME: change icon -> send-image { MessageInput/jsx }
+// FIXME: change zustand -> useState

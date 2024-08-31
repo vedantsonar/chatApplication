@@ -1,26 +1,38 @@
-import avatar from ".././../components/profile-pic-4.jpg";
+import useConversation from "../../zustand/useConversation.js";
 
-const Conversation = () => {
+const Conversation = ({ conversation, lastIdx }) => {
+  const { selectedConversation, setSelectedConversation } = useConversation();
+
+  const isSelected = selectedConversation?._id === conversation._id;
+
   return (
     <>
-      <div className="flex gap-2 items-center hover:bg-sky-500 rounded p-2 py-1 cursor-pointer">
+      <div
+        className={`flex gap-2 items-center hover:bg-gray-500 rounded p-2 py-1 cursor-pointer
+        ${isSelected ? "bg-gray-400" : ""}
+        `}
+        onClick={() => setSelectedConversation(conversation)}
+      >
         <div className="avatar online">
           <div className="w-12 rounded-full">
             <img
-              src={avatar}
+              src={conversation.profilePic}
               alt="user avatar"
+              style={{ backgroundColor: "whitesmoke" }}
             />
           </div>
         </div>
 
         <div className="flex flex-col flex-1">
           <div className="flex gap-3 justify-between">
-            <p className="font-bold text-gray-200 ms-3">Sai</p>
+            <p className="font-bold text-gray-200 ms-3">
+              {conversation.fullname}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="divider my-0 py-0 h-1" />
+      {!lastIdx && <div className="divider my-1 py-0 h-[1px] bg-slate-400" />}
     </>
   );
 };

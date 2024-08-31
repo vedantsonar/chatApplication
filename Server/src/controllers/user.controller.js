@@ -89,11 +89,21 @@ const logout = (req, res) => {
     }
 }
 
+const getCurrentUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id)
+        return res.status(200).json({user})
+    } catch (error) {
+        return res.status(500).json({ message: "Error in get current User" , error: error.message})
+    }
+}
+
 
 export {
     registerUser,
     loginUser,
-    logout
+    logout,
+    getCurrentUser
 }
 
 // TODO: Update User Information 
