@@ -1,8 +1,8 @@
 import { Chat } from "../models/chat.models.js";
 import { Message } from "../models/message.models.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 const sendMessage = async (req, res) => {
-  let success = false;
 
   try {
     const { receiverId } = req.params;
@@ -19,27 +19,29 @@ const sendMessage = async (req, res) => {
       });
     }
 
-    const newMsg = new Message({
+    const newMessage = new Message({
       sender: senderId,
       receiver: receiverId,
       message,
     });
 
-    if (newMsg) {
-      chat.messages.push(newMsg._id);
+    if (newMessage) {
+      chat.messages.push(newMessage._id);
     }
 
+    await Promise.all([chat.save(), newMessage.save()]); // both save methods run simultaneously
+
     // Socket.io
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if(receiverSocketId){
+      io.to(receiverSocketId).emit("newMessage", newMessage)
+    }
 
-    await Promise.all([chat.save(), newMsg.save()]); // both save methods run simultaneously
-
-    success = true;
-    res.status(201).json({ success, newMsg });
+    res.status(201).json({newMessage});
   } catch (error) {
     return res
       .status(500)
       .json({
-        success,
         message: "Error in send message controller",
         error: error.message,
       });
