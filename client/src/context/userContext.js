@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from "react";
-import toast from "react-hot-toast";
 
 export const UserContext = createContext();
 
@@ -27,7 +26,7 @@ export const UserProvider = ({ children }) => {
 
       setUser(data.user);
     } catch (error) {
-      toast.error(error.message);
+      console.error(error.message);
     } finally {
       setLoading(false); // Set loading to false after the data is fetched
     }
